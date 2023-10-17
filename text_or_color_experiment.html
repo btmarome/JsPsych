@@ -51,10 +51,10 @@
     var instructions = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: `
-            <p>In this experiment, an image will appear in the center 
-            of the screen.</p><p>If the image contains <strong>color</strong>, 
+            <p>In this experiment, a drawing will appear in the center 
+            of the screen.</p><p>If the drawing contains <strong>color</strong>, 
             press the letter F on the keyboard.</p>
-            <p>If the image does not contain <strong>color</strong> (appears
+            <p>If the drawing does not contain <strong>color</strong> (appears
             black and white or grayscale), press the letter J .</p>
             <div style='float: left;'><img src='img/color1.png' style= 'width: 500px; height: 400px;'></img>
                 <p class='small'><strong>Press the F key</strong></p>
@@ -131,9 +131,9 @@
             bw_trials = bw_trials.count();
             var total_trials = color_trials + bw_trials;
 
-            return `<p>There were a total of ${total_trials} images across trials.</p>
-                <p>${color_trials} of these images contained color.</p>
-                <p>${bw_trials} of these images did not contain color.</p>
+            return `<p>There were a total of ${total_trials} drawings across trials.</p>
+                <p>${color_trials} of these drawings contained color.</p>
+                <p>${bw_trials} of these drawings did not contain color.</p>
                 <p>Press any key to complete the experiment. Thank you!</p>`;
 
         }

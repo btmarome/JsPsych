@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <script src="https://unpkg.com/jspsych@7.3.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-preload@1.1.2"></script>
+    <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <style>
+    </style>
+  </head>
+  <body></body>
+  <script>
+
+    // initializing JsPsych
+    var jsPsych = initJsPsych({
+        override_safe_mode: true,
+        on_finish: function() {
+            jsPsych.data.displayData();
+        }
+    });
+
+    // initializing timeline for later use
+    var timeline = [];
+
+    // welcome message for users
+    var welcome = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: "Welcome to the Vividness of Visual Imagery Questionnaire. Press any key to begin."
+    };
+    
+    timeline.push(welcome);
+
+    // instructions for users to complete task
+    var instructions = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: `
+            <p>For each following scenario try to form a mental picture of the 
+            people, objects, or setting.</p><p>Your task is to rate how vivid the mental
+            picture is using a 5-point scale.</p>
+            <p>If you do not have a visual image, rate vividness as '1'.</p>
+            <div>
+                <p class='small'>Only use '5' for mental pictures that are as vivid as <strong>real seeing</strong>.</p>
+            </div>
+            <p>The rating scale is as follows:</p>
+            <p>1. No image at all, I only “know” I am thinking of the object</p>
+            <p>2. Dim and vague image</p>
+            <p>3. Moderately realistic and vivid</p>
+            <p>4. Realistic and reasonably vivid</p>
+            <p>5. Perfectly realistic, as vivid as real seeing</p>
+            <p>Press any key to begin.</p>
+        `,
+        // set gap before first trial appears
+        post_trial_gap: 2000
+    };
+
+    timeline.push(instructions);
+
+
+    // listing prompts that will be used in trials
+    var test_stimuli = [
+        { stimulus: 'For items 1-4, think of some relative or friend whom you frequently see (but who is not with you at present) and consider carefully the picture that comes before your mind\'s eye. Press a number 1-5 to indicate how vividly you can imagine:<br><br>1. The exact contour of face, head, shoulders and body.'},
+        { stimulus: '2. Characteristic poses of head, attitudes of body, etc.' },
+        { stimulus: '3. The precise carriage, length of step, etc. in walking.' },
+        { stimulus: '4. The different colours worn in some familiar clothes.' },
+        { stimulus: 'For items 5-8, visualize a rising sun. Consider carefully the picture that comes before your mind\'s eye. Press a number 1-5 to indicate how vividly you imagine:<br><br>5. The sun is rising above the horizon into a hazy sky.'},
+        { stimulus: '6. The sky clears and surrounds the sun with blueness.' },
+        { stimulus: '7. Clouds. A storm blows up, with flashes of lightning.' },
+        { stimulus: '8. A rainbow appears.' },
+        { stimulus: 'For items 9-12, think of the front of a shop which you often go to. Consider carefully the picture that comes before your mind\'s eye. Press a number 1-5 to indicate how vividly you imagine:<br><br>9. The overall appearance of the shop from the opposite side of the road.' },
+        { stimulus: '10. A window display including colours, shapes and details of individual items for sale.' },
+        { stimulus: '11. You are near the entrance. The colour, shape and details of the door.' },
+        { stimulus: '12. You enter the shop and go to the counter. The counter assistance serves you. Money changes hands.' },
+        { stimulus: 'For items 13-16, think of a country scene which involves trees, mountains and a lake. Consider carefully the picture that comes before your mind\'s eye. Press a number 1-5 to indicate how vividly you imagine:<br><br>13. The contours of the landscape. ' },
+        { stimulus: '14. The colour and shape of the trees.' },
+        { stimulus: '15. The colour and shape of the lake.' },
+        { stimulus: '16. A strong wind blows on the trees and the lake causing waves.' }
+    ];
+
+    // 500 ms intertrial interval
+    var trial_gap = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: ' ',
+        choices: "NO_KEYS",
+        trial_duration: 500,
+        data: {
+            task: 'trial gap'
+        }
+    };
+
+   // organizing scale items for easier analysis
+    var test = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: jsPsych.timelineVariable('stimulus'),
+        choices: ['1', '2', '3', '4', '5'],
+        data: {
+            task: 'response',
+            survey: 'VVIQ'
+        },
+    }
+    // combining test and trial gap into single trial
+    var test_procedure = {
+        timeline: [trial_gap, test],
+        timeline_variables: test_stimuli,
+        repetitions: 1,
+        randomize_order: false
+    }
+
+    timeline.push(test_procedure);
+
+    // debrief for post-experiment
+    var debrief_block = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: function() {
+
+            jsPsych.data.get().localSave('csv','mydata.csv');
+
+            return `<p>Press any key to complete the experiment. Thank you!</p>`;
+        }
+    };
+
+    timeline.push(debrief_block);
+
+    // runs the experiment
+    jsPsych.run(timeline);
+
+  </script>
+</html>

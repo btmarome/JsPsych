@@ -5,7 +5,11 @@
     <script src="https://unpkg.com/jspsych@7.3.3"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
     <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-text@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey@0.2.1"></script>
     <script src="https://unpkg.com/@jspsych/plugin-preload@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-multi-choice@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-call-function@1.1.2"></script>
     <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
     <style>
     </style>
@@ -61,45 +65,104 @@
 
     // listing images that will be used in trials
     var test_stimuli = [
-        { stimulus: 'img/color1.png' },
-        { stimulus: 'img/color2.png' },
-        { stimulus: 'img/color3.png' },
-        { stimulus: 'img/color4.png' },
-        { stimulus: 'img/color5.png' }
+        { stimulus: 'FIGRIM/sun_aawlazprqrjhwtpa.jpg' },
+        { stimulus: 'FIGRIM/sun_ajcovinkacqkefec.jpg' },
+        { stimulus: 'FIGRIM/sun_admzmthmjgmaimfo.jpg' },
+        { stimulus: 'FIGRIM/sun_allyzeegmzmqzkya.jpg' },
+        { stimulus: 'FIGRIM/sun_aflsnycseiotupac.jpg' }
     ];
 
-    // originally fixation cross, altered to just be a 500 ms intertrial interval
-    var fixation = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: ' ',
-        choices: "NO_KEYS",
-        trial_duration: 500,
-        data: {
-            task: 'fixation'
-        }
-    };
-    
-   // organizing total of each type of image for easier analysis
-    var test = {
+    // shuffles images
+    var shuffled = jsPsych.randomization.shuffle(test_stimuli);
+
+    var index = 0;
+
+    var imagePresent = {
         type: jsPsychImageKeyboardResponse,
-        stimulus: jsPsych.timelineVariable('stimulus'),
-        stimulus_width: 500,
-        choices: "NO_KEYS",
-        trial_duration: 10000,
-        data: {
-            task: 'slideshow'
+        stimulus: function() {
+            return shuffled[index].stimulus;
         },
-    }
+        choices: "NO_KEYS",
+        stimulus_width: 700,
+        stimulus_height: 700,
+        trial_duration: 1000,
+        post_trial_gap: 100,
+        data: {
+            task: 'Study Session'
+        },
+        on_finish: function () {
+            index ++;
+        },
+    };
 
-    // combining fixation and test into single trial
-    var test_procedure = {
-        timeline: [fixation, test],
-        timeline_variables: test_stimuli,
-        repetitions: 0,
-        randomize_order: true
-    }
+    var probe = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        {
+          prompt:
+            "Respond to the following question. Then, press continue to move forward. <br> <br> Just before this screen, were you on-task or off-task?",
+          name: "taskrelated",
+          options: ["On-task", "Off-task"],
+          required: true,
+          horizontal: false,
+        },
+      ],
+      data: {
+        probe: 1,
+      },
+    };
 
-    timeline.push(test_procedure);
+    var probability;
+
+    var probeProbability = function () {
+      probability = Math.random();
+    };
+
+    var probeProbabilityFxn = {
+      type: jsPsychCallFunction,
+      func: probeProbability,
+    };
+
+    var after2 = {
+        timeline: [probe],
+        conditional_function: function () {
+            if (probability < 0.50) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        },
+    };
+
+    var after3 = {
+        timeline: [probe],
+        conditional_function: function () {
+            if (probability >= 0.50) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        },
+    };
+
+
+    //testing block
+    var test = {
+        timeline: [
+            probeProbabilityFxn,
+            imagePresent,
+            imagePresent,
+            after2,
+            imagePresent,
+            after3,
+            imagePresent,
+            imagePresent
+      ],
+    };
+
+    timeline.push(test);
 
     // debrief for post-experiment; provides accuracy and reaction time
     var debrief_block = {
@@ -110,7 +173,7 @@
 
             return `<p>Press any key to complete the experiment. Thank you!</p>`;
 
-        }
+        },
     };
 
     timeline.push(debrief_block);

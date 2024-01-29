@@ -10,6 +10,7 @@
     <script src="https://unpkg.com/@jspsych/plugin-preload@1.1.2"></script>
     <script src="https://unpkg.com/@jspsych/plugin-survey-multi-choice@1.1.2"></script>
     <script src="https://unpkg.com/@jspsych/plugin-call-function@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-likert@1.1.2"></script>
     <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
     <style>
     </style>
@@ -31,9 +32,12 @@
     // preloading images
     var preload = {
         type: jsPsychPreload,
-        images: ['img/color1.png', 'img/color2.png', 
-                 'img/color3.png', 'img/color4.png',
-                 'img/color5.png'],
+        images: [
+        'FIGRIM/sun_aawlazprqrjhwtpa.jpg', 
+        'FIGRIM/sun_ajcovinkacqkefec.jpg',
+        'FIGRIM/sun_admzmthmjgmaimfo.jpg',
+        'FIGRIM/sun_allyzeegmzmqzkya.jpg',
+        'FIGRIM/sun_aflsnycseiotupac.jpg'],
         auto_preload: true,
         message: 'Please wait while the experiment loads...',
         // don't stop the experiment if there are file loading errors or if loading times out
@@ -51,56 +55,298 @@
     timeline.push(welcome);
 
     // instructions for users to complete task
-    var instructions = {
+    var instructions1 = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: `
-            <p>Study the following images. They will remain on screen for 10 seconds each.</p>
+            <p>Study the following stimuli. They will remain on screen for 1 second each.</p>
             <p>Press any key to begin.</p>
         `,
         // set gap before first trial appears
         post_trial_gap: 2000
     };
 
-    timeline.push(instructions);
+    timeline.push(instructions1);
 
     // listing images that will be used in trials
-    var test_stimuli = [
+    var image_stimuli = [
+        { stimulus: 'FIGRIM/sun_aaofphpvkeqlhwgu.jpg' },
+        { stimulus: 'FIGRIM/sun_aargjckpqizjlath.jpg' },
+        { stimulus: 'FIGRIM/sun_aasazkdidicwjsvv.jpg' },
         { stimulus: 'FIGRIM/sun_aawlazprqrjhwtpa.jpg' },
-        { stimulus: 'FIGRIM/sun_ajcovinkacqkefec.jpg' },
+        { stimulus: 'FIGRIM/sun_aazqzpomyylceich.jpg' },
+        { stimulus: 'FIGRIM/sun_abchldffyzrykkwt.jpg' },
+        { stimulus: 'FIGRIM/sun_abcppolmjdrtjmev.jpg' },
+        { stimulus: 'FIGRIM/sun_abwbbibjamkycqvp.jpg' },
+        { stimulus: 'FIGRIM/sun_adayphpxynntilqc.jpg' },
         { stimulus: 'FIGRIM/sun_admzmthmjgmaimfo.jpg' },
+        { stimulus: 'FIGRIM/sun_adgbprucwegckehq.jpg' },
+        { stimulus: 'FIGRIM/sun_adysrrgnddvmloix.jpg' },
+        { stimulus: 'FIGRIM/sun_aeexmpppqflyfmjn.jpg' },
+        { stimulus: 'FIGRIM/sun_aflsnycseiotupac.jpg' },
+        { stimulus: 'FIGRIM/sun_afrxrafufcfxrtoi.jpg' },
+        { stimulus: 'FIGRIM/sun_aggtgalfwqduodph.jpg' },
+        { stimulus: 'FIGRIM/sun_ahaknlgftjqgkcae.jpg' },
+        { stimulus: 'FIGRIM/sun_ahhnjksmytmbzmmp.jpg' },
+        { stimulus: 'FIGRIM/sun_aikqfdkgudsaclpg.jpg' },
+        { stimulus: 'FIGRIM/sun_aimafjvqvgcizssk.jpg' },
+        { stimulus: 'FIGRIM/sun_aisecutumiowdpll.jpg' },
+        { stimulus: 'FIGRIM/sun_ajcovinkacqkefec.jpg' },
+        { stimulus: 'FIGRIM/sun_ajlpekbqvytdohqb.jpg' },
+        { stimulus: 'FIGRIM/sun_ajpqtqfwriojkdkc.jpg' },
+        { stimulus: 'FIGRIM/sun_ajrvfrddsfxranuo.jpg' },
+        { stimulus: 'FIGRIM/sun_akjxzdcdwzfximmk.jpg' },
+        { stimulus: 'FIGRIM/sun_akxxgzkyvjbywjfx.jpg' },
         { stimulus: 'FIGRIM/sun_allyzeegmzmqzkya.jpg' },
-        { stimulus: 'FIGRIM/sun_aflsnycseiotupac.jpg' }
+        { stimulus: 'FIGRIM/sun_amagqndvvlvclvaa.jpg' },
+        { stimulus: 'FIGRIM/sun_avmugnsrzkxzvyrs.jpg' },
+        { stimulus: 'FIGRIM/sun_axqfhuboqdsqyblh.jpg' },
+        { stimulus: 'FIGRIM/sun_aygkoljubkyhhycy.jpg' },
+        { stimulus: 'FIGRIM/sun_ayuquurjulxlnkjc.jpg' },
+        { stimulus: 'FIGRIM/sun_azkaltevhhcogwys.jpg' },
+        { stimulus: 'FIGRIM/sun_bahxqtkjfddkgvgk.jpg' },
+        { stimulus: 'FIGRIM/sun_azwrgnzyeobohhhv.jpg' },
+        { stimulus: 'FIGRIM/sun_bagsogdyzikrwoja.jpg' },
+        { stimulus: 'FIGRIM/sun_bassdjddcuglcdgd.jpg' },
+        { stimulus: 'FIGRIM/sun_bazeryuujnfjfgwc.jpg' },
+        { stimulus: 'FIGRIM/sun_bbooxjlzamkluyta.jpg' },
+        { stimulus: 'FIGRIM/sun_bbgzuwnafsiyobtr.jpg' },
+        { stimulus: 'FIGRIM/sun_bcanxwxacwqfxkbf.jpg' },
+        { stimulus: 'FIGRIM/sun_bcdqgpzumsmvknfn.jpg' },
+        { stimulus: 'FIGRIM/sun_bciwhkffbduessdt.jpg' },
+        { stimulus: 'FIGRIM/sun_bcsvhigmjfsunagu.jpg' },
+        { stimulus: 'FIGRIM/sun_bfgthdpzwpuxxcpe.jpg' },
+        { stimulus: 'FIGRIM/sun_bewsiexlgmunlxps.jpg' },
+        { stimulus: 'FIGRIM/sun_bfvmjlomfvojcjbf.jpg' },
+        { stimulus: 'FIGRIM/sun_bgflqwdzjqmjrhor.jpg' },
+        { stimulus: 'FIGRIM/sun_bivbjkdbxmkncqwv.jpg' },
+        { stimulus: 'FIGRIM/sun_bgfszxxfoivehzze.jpg' },
+        { stimulus: 'FIGRIM/sun_bljymfxujgbxjuvx.jpg' },
+        { stimulus: 'FIGRIM/sun_bmtbldypepqtfcha.jpg' },
+        { stimulus: 'FIGRIM/sun_bltxnjuempwrfypr.jpg' },
+        { stimulus: 'FIGRIM/sun_boiucgzivwosmqhd.jpg' },
+        { stimulus: 'FIGRIM/sun_brvopxqzbbmiggcc.jpg' },
+        { stimulus: 'FIGRIM/sun_bswrcddsdaymohah.jpg' },
+        { stimulus: 'FIGRIM/sun_btwbhwvpmznjsvus.jpg' },
+        { stimulus: 'FIGRIM/sun_bwexgztjsyvkxzwk.jpg' },
+        { stimulus: 'FIGRIM/sun_bxxtkmyydusifqkv.jpg' }
     ];
 
-    // shuffles images
-    var shuffled = jsPsych.randomization.shuffle(test_stimuli);
 
-    var index = 0;
+    var word_stimuli = [
+        { stimulus: 'AIRCRAFT' },
+        { stimulus: 'ANIMAL' },
+        { stimulus: 'ASPIRIN' },
+        { stimulus: 'BALCONY' },
+        { stimulus: 'BILL' },
+        { stimulus: 'CHAIN' },
+        { stimulus: 'CORN' },
+        { stimulus: 'COWBOY' },
+        { stimulus: 'DOCUMENT' },
+        { stimulus: 'DRIVER' },
+        { stimulus: 'ELEVATOR' },
+        { stimulus: 'EXPERT' },
+        { stimulus: 'FEATHER' },
+        { stimulus: 'FORK' },
+        { stimulus: 'FOUNTAIN' },
+        { stimulus: 'FUGITIVE' },
+        { stimulus: 'GALAXY' },
+        { stimulus: 'GHOST' },
+        { stimulus: 'GLUE' },
+        { stimulus: 'HEART' },
+        { stimulus: 'HOOK' },
+        { stimulus: 'INSPECT' },
+        { stimulus: 'ITEM' },
+        { stimulus: 'JAM' },
+        { stimulus: 'JOURNAL' },
+        { stimulus: 'LAMB' },
+        { stimulus: 'LIZARD' },
+        { stimulus: 'LIMOUSINE' },
+        { stimulus: 'MAGICIAN' },
+        { stimulus: 'MASK' },
+        { stimulus: 'METEOR' },
+        { stimulus: 'MINER' },
+        { stimulus: 'MUSEUM' },
+        { stimulus: 'NIECE' },
+        { stimulus: 'NOTEBOOK' },
+        { stimulus: 'OATMEAL' },
+        { stimulus: 'OZONE' },
+        { stimulus: 'PARIS' },
+        { stimulus: 'PEPPER' },
+        { stimulus: 'PIE' },
+        { stimulus: 'PLUM' },
+        { stimulus: 'ROOSTER' },
+        { stimulus: 'ROPE' },
+        { stimulus: 'SCALPEL' },
+        { stimulus: 'SHEARS' },
+        { stimulus: 'SLUG' },
+        { stimulus: 'SWAN' },
+        { stimulus: 'TAVERN' },
+        { stimulus: 'TICK' },
+        { stimulus: 'TWINE' },
+        { stimulus: 'TYPEWRITER' },
+        { stimulus: 'UMPIRE' },
+        { stimulus: 'VAULT' },
+        { stimulus: 'VILLAIN' },
+        { stimulus: 'VIRUS' },
+        { stimulus: 'WALLET' },
+        { stimulus: 'WATERFALL' },
+        { stimulus: 'WHIP' },
+        { stimulus: 'YOLK' },
+        { stimulus: 'ZEBRA' }
+    ]
 
+    // shuffles test stimuli
+    var shuffledImages = jsPsych.randomization.shuffle(image_stimuli);
+
+    var shuffledWords = jsPsych.randomization.shuffle(word_stimuli);
+
+    //declaring variables for indexing stimuli
+    var imageIndex = 0;
+
+    var wordIndex = 0;
+
+    //sorting through images and words
     var imagePresent = {
         type: jsPsychImageKeyboardResponse,
         stimulus: function() {
-            return shuffled[index].stimulus;
+            return shuffledImages[imageIndex].stimulus;
         },
         choices: "NO_KEYS",
-        stimulus_width: 700,
-        stimulus_height: 700,
+        stimulus_width: 500,
+        stimulus_height: 500,
         trial_duration: 1000,
         post_trial_gap: 100,
         data: {
-            task: 'Study Session'
+            task: 'Image Study'
         },
         on_finish: function () {
-            index ++;
+            imageIndex ++;
         },
     };
 
+    var wordPresent = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: function() {
+            return shuffledWords[wordIndex].stimulus;
+        },
+        choices: "NO_KEYS",
+        trial_duration: 1000,
+        post_trial_gap: 100,
+        data: {
+            task: 'Word Study'
+        },
+        on_finish: function () {
+            wordIndex ++;
+        },
+    };
+
+    //question set-up for if the participant is off-task
+    var offTaskQuestions = {
+        type: jsPsychSurveyLikert,
+        questions: [
+        {
+          prompt: "My thoughts consisted of inner speech",
+          name: "Inner Speech",
+          labels: [
+            "No inner speech",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "Lots of inner speech",
+          ],
+          required: true,
+          horizontal: true
+        },
+        {
+          prompt: "My thoughts consisted of visual imagery",
+          name: "Inner Imagery",
+          labels: [
+            "No visual imagery",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "Lots of visual imagery",
+          ],
+          required: true,
+          horizontal: true
+        },
+        {
+          prompt: "My thoughts consisted of auditory imagery",
+          name: "Inner Auditory",
+          labels: [
+            "No auditory imagery",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "Lots of auditory imagery",
+          ],
+          required: true,
+          horizontal: true
+        },
+        {
+          prompt: "My thoughts were focused on bodily sensation",
+          name: "Bodily Sensation",
+          labels: [
+            "No bodily sensation",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "Lots of bodily sensation",
+          ],
+          required: true,
+          horizontal: true
+        },
+        {
+          prompt: "My thoughts were focused on a particular emotion",
+          name: "Inner Emotion",
+          labels: [
+            "No inner emotion",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "Lots of inner emotion",
+          ],
+          required: true,
+          horizontal: true
+        },
+    ],
+    };
+
+    //variable declaration for organizing the probe
+    var offTaskBlock;
+
+    //mind-wandering probe
     var probe = {
       type: jsPsychSurveyMultiChoice,
       questions: [
         {
           prompt:
-            "Respond to the following question. Then, press continue to move forward. <br> <br> Just before this screen, were you on-task or off-task?",
+            "Respond to the following question. Then, press continue to move forward. <br> <br> Just before this screen, were your thoughts on-task or off-task?",
           name: "taskrelated",
           options: ["On-task", "Off-task"],
           required: true,
@@ -110,12 +356,37 @@
       data: {
         probe: 1,
       },
+      on_finish: function(data){
+        //logs response
+        if(jsPsych.pluginAPI.compareKeys(data.response["taskrelated"], "Off-task")){
+            offTaskBlock = true;
+        } else {
+            offTaskBlock = false;
+        }
+      },
     };
 
-    var probability;
+    //function to ask questions if participant is off-task
+    var conditionalQuestions = {
+        timeline: [offTaskQuestions],
+        conditional_function: function () {
+            if (offTaskBlock == true) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        },
+        on_finish: function(){
+            offTaskBlock = false;
+        },
+    };
+
+    //randomizing appearance of mind-wandering probe
+    var probabilityMW;
 
     var probeProbability = function () {
-      probability = Math.random();
+      probabilityMW = Math.random();
     };
 
     var probeProbabilityFxn = {
@@ -126,7 +397,7 @@
     var after2 = {
         timeline: [probe],
         conditional_function: function () {
-            if (probability < 0.50) {
+            if (probabilityMW < 0.50) {
                 return true;
             }
             else {
@@ -138,7 +409,7 @@
     var after3 = {
         timeline: [probe],
         conditional_function: function () {
-            if (probability >= 0.50) {
+            if (probabilityMW >= 0.50) {
                 return true;
             }
             else {
@@ -148,23 +419,60 @@
     };
 
 
-    //testing block
-    var test = {
+    //testing blocks
+    var imagesBlock = {
         timeline: [
             probeProbabilityFxn,
             imagePresent,
             imagePresent,
             after2,
+            conditionalQuestions,
             imagePresent,
             after3,
+            conditionalQuestions,
             imagePresent,
             imagePresent
       ],
     };
 
-    timeline.push(test);
+    var wordsBlock = {
+        timeline: [
+            probeProbabilityFxn,
+            wordPresent,
+            wordPresent,
+            after2,
+            conditionalQuestions,
+            wordPresent,
+            after3,
+            conditionalQuestions,
+            wordPresent,
+            wordPresent
+      ],
+    };
 
-    // debrief for post-experiment; provides accuracy and reaction time
+    //randomizing block order
+    blockArray = [imagesBlock, wordsBlock];
+    
+    var randomBlocks = jsPsych.randomization.sampleWithoutReplacement(blockArray, 2);
+
+    timeline.push(randomBlocks[0]);
+
+    var instructions2 = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: `
+            <p>Study the following stimuli. They will remain on screen for 1 second each.</p>
+            <p>Press any key to begin.</p>
+        `,
+        // set gap before first trial appears
+        post_trial_gap: 2000
+    };
+
+    timeline.push(instructions2);
+
+    timeline.push(randomBlocks[1]);
+
+
+    // debrief for post-experiment; saves local file
     var debrief_block = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: function() {

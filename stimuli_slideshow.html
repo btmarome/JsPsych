@@ -227,7 +227,7 @@
     var wordPresent = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: function() {
-            return shuffledWords[wordIndex].stimulus;
+            return '<p style = "font-size:50px;">' + shuffledWords[wordIndex].stimulus + '</p>';
         },
         choices: "NO_KEYS",
         trial_duration: 1000,
@@ -245,7 +245,7 @@
         type: jsPsychSurveyLikert,
         questions: [
         {
-          prompt: "My thoughts consisted of inner speech",
+          prompt: "My thoughts were focused on inner speech (e.g., self-talk or planning dinner).",
           name: "Inner Speech",
           labels: [
             "No inner speech",
@@ -263,7 +263,7 @@
           horizontal: true
         },
         {
-          prompt: "My thoughts consisted of visual imagery",
+          prompt: "My thoughts were focused on visual imagery(e.g., imagining a walk through the park).",
           name: "Inner Imagery",
           labels: [
             "No visual imagery",
@@ -281,7 +281,7 @@
           horizontal: true
         },
         {
-          prompt: "My thoughts consisted of auditory imagery",
+          prompt: "My thoughts were focused on auditory imagery(e.g., having a tune in mind).",
           name: "Inner Auditory",
           labels: [
             "No auditory imagery",
@@ -299,7 +299,7 @@
           horizontal: true
         },
         {
-          prompt: "My thoughts were focused on bodily sensation",
+          prompt: "My thoughts were focused on bodily sensation(e.g., a pain or itch in your foot).",
           name: "Bodily Sensation",
           labels: [
             "No bodily sensation",
@@ -317,7 +317,7 @@
           horizontal: true
         },
         {
-          prompt: "My thoughts were focused on a particular emotion",
+          prompt: "My thoughts were focused on a particular emotion(e.g., feeling happy or sad).",
           name: "Inner Emotion",
           labels: [
             "No inner emotion",

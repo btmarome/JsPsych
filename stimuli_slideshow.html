@@ -33,11 +33,67 @@
     var preload = {
         type: jsPsychPreload,
         images: [
-        'FIGRIM/sun_aawlazprqrjhwtpa.jpg', 
-        'FIGRIM/sun_ajcovinkacqkefec.jpg',
-        'FIGRIM/sun_admzmthmjgmaimfo.jpg',
-        'FIGRIM/sun_allyzeegmzmqzkya.jpg',
-        'FIGRIM/sun_aflsnycseiotupac.jpg'],
+            'FIGRIM/sun_aaofphpvkeqlhwgu.jpg',
+            'FIGRIM/sun_aargjckpqizjlath.jpg',
+            'FIGRIM/sun_aasazkdidicwjsvv.jpg',
+            'FIGRIM/sun_aawlazprqrjhwtpa.jpg',
+            'FIGRIM/sun_aazqzpomyylceich.jpg',
+            'FIGRIM/sun_abchldffyzrykkwt.jpg',
+            'FIGRIM/sun_abcppolmjdrtjmev.jpg',
+            'FIGRIM/sun_abwbbibjamkycqvp.jpg',
+            'FIGRIM/sun_adayphpxynntilqc.jpg',
+            'FIGRIM/sun_adgbprucwegckehq.jpg',
+            'FIGRIM/sun_admzmthmjgmaimfo.jpg',
+            'FIGRIM/sun_adysrrgnddvmloix.jpg',
+            'FIGRIM/sun_aeexmpppqflyfmjn.jpg',
+            'FIGRIM/sun_aflsnycseiotupac.jpg',
+            'FIGRIM/sun_afrxrafufcfxrtoi.jpg',
+            'FIGRIM/sun_aggtgalfwqduodph.jpg',
+            'FIGRIM/sun_ahaknlgftjqgkcae.jpg',
+            'FIGRIM/sun_ahhnjksmytmbzmmp.jpg',
+            'FIGRIM/sun_aikqfdkgudsaclpg.jpg',
+            'FIGRIM/sun_aimafjvqvgcizssk.jpg',
+            'FIGRIM/sun_aisecutumiowdpll.jpg',
+            'FIGRIM/sun_ajcovinkacqkefec.jpg',
+            'FIGRIM/sun_ajlpekbqvytdohqb.jpg',
+            'FIGRIM/sun_ajpqtqfwriojkdkc.jpg',
+            'FIGRIM/sun_ajrvfrddsfxranuo.jpg',
+            'FIGRIM/sun_akjxzdcdwzfximmk.jpg',
+            'FIGRIM/sun_akxxgzkyvjbywjfx.jpg',
+            'FIGRIM/sun_allyzeegmzmqzkya.jpg',
+            'FIGRIM/sun_amagqndvvlvclvaa.jpg',
+            'FIGRIM/sun_avmugnsrzkxzvyrs.jpg',
+            'FIGRIM/sun_axqfhuboqdsqyblh.jpg',
+            'FIGRIM/sun_aygkoljubkyhhycy.jpg',
+            'FIGRIM/sun_ayuquurjulxlnkjc.jpg',
+            'FIGRIM/sun_azkaltevhhcogwys.jpg',
+            'FIGRIM/sun_azwrgnzyeobohhhv.jpg',
+            'FIGRIM/sun_bagsogdyzikrwoja.jpg',
+            'FIGRIM/sun_bahxqtkjfddkgvgk.jpg',
+            'FIGRIM/sun_bassdjddcuglcdgd.jpg',
+            'FIGRIM/sun_bazeryuujnfjfgwc.jpg',
+            'FIGRIM/sun_bbgzuwnafsiyobtr.jpg',
+            'FIGRIM/sun_bbooxjlzamkluyta.jpg',
+            'FIGRIM/sun_bcanxwxacwqfxkbf.jpg',
+            'FIGRIM/sun_bcdqgpzumsmvknfn.jpg',
+            'FIGRIM/sun_bciwhkffbduessdt.jpg',
+            'FIGRIM/sun_bcsvhigmjfsunagu.jpg',
+            'FIGRIM/sun_bewsiexlgmunlxps.jpg',
+            'FIGRIM/sun_bfgthdpzwpuxxcpe.jpg',
+            'FIGRIM/sun_bfvmjlomfvojcjbf.jpg',
+            'FIGRIM/sun_bgflqwdzjqmjrhor.jpg',
+            'FIGRIM/sun_bgfszxxfoivehzze.jpg',
+            'FIGRIM/sun_bivbjkdbxmkncqwv.jpg',
+            'FIGRIM/sun_bljymfxujgbxjuvx.jpg',
+            'FIGRIM/sun_bltxnjuempwrfypr.jpg',
+            'FIGRIM/sun_bmtbldypepqtfcha.jpg',
+            'FIGRIM/sun_boiucgzivwosmqhd.jpg',
+            'FIGRIM/sun_brvopxqzbbmiggcc.jpg',
+            'FIGRIM/sun_bswrcddsdaymohah.jpg',
+            'FIGRIM/sun_btwbhwvpmznjsvus.jpg',
+            'FIGRIM/sun_bwexgztjsyvkxzwk.jpg',
+            'FIGRIM/sun_bxxtkmyydusifqkv.jpg'
+        ],
         auto_preload: true,
         message: 'Please wait while the experiment loads...',
         // don't stop the experiment if there are file loading errors or if loading times out
@@ -53,6 +109,16 @@
     };
     
     timeline.push(welcome);
+
+    // gathering email to be deidentified later; for gift card distribution
+    var email = {
+        type: jsPsychSurveyText,
+        questions: [
+            {prompt: 'For completing this experiment, you will be awarded a $10 Amazon Gift Card Code.<br><br>Please enter an email address we may contact you at.'}
+        ]
+    };
+
+    timeline.push(email);
 
     // instructions for users to complete task
     var instructions1 = {
@@ -202,8 +268,10 @@
 
     //declaring variables for indexing stimuli
     var imageIndex = 0;
+    var oldImages = [];
 
     var wordIndex = 0;
+    var oldWords = [];
 
     //sorting through images and words
     var imagePresent = {
@@ -220,6 +288,7 @@
             task: 'Image Study'
         },
         on_finish: function () {
+            oldImages.push(shuffledImages[imageIndex].stimulus);
             imageIndex ++;
         },
     };
@@ -236,22 +305,68 @@
             task: 'Word Study'
         },
         on_finish: function () {
+            oldWords.push(shuffledWords[wordIndex].stimulus);
             wordIndex ++;
         },
     };
 
-    //question set-up for if the participant is off-task
-    var offTaskQuestions = {
+    //mind-wandering multi-choice
+    var onOffTask = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        {
+          prompt:
+            "Respond to the following question. Then, press continue to move forward. <br> <br> Just before this screen, were your thoughts on-task or off-task?",
+          name: "taskrelated",
+          options: ["On-task", "Off-task"],
+          required: true,
+          horizontal: false,
+        },
+      ],
+      data: {
+        probe: 1,
+      },
+    };
+
+    //probe follow-up questions
+    var probeQuestions = {
         type: jsPsychSurveyLikert,
         questions: [
+        {
+          prompt: "I was guiding my thoughts.",
+          name: "Guidance",
+          labels: [
+            "No guidance",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "Complete guidance",
+          ],
+          required: true,
+          horizontal: true
+        },
+        {
+          prompt: "I was aware of my thoughts.",
+          name: "Awareness",
+          labels: [
+            "No awareness",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "Complete awareness",
+          ],
+          required: true,
+          horizontal: true
+        },
         {
           prompt: "My thoughts were focused on inner speech (e.g., self-talk or planning dinner).",
           name: "Inner Speech",
           labels: [
             "No inner speech",
-            "",
-            "",
-            "",
             "",
             "",
             "",
@@ -272,9 +387,6 @@
             "",
             "",
             "",
-            "",
-            "",
-            "",
             "Lots of visual imagery",
           ],
           required: true,
@@ -285,9 +397,6 @@
           name: "Inner Auditory",
           labels: [
             "No auditory imagery",
-            "",
-            "",
-            "",
             "",
             "",
             "",
@@ -308,9 +417,6 @@
             "",
             "",
             "",
-            "",
-            "",
-            "",
             "Lots of bodily sensation",
           ],
           required: true,
@@ -326,60 +432,12 @@
             "",
             "",
             "",
-            "",
-            "",
-            "",
             "Lots of inner emotion",
           ],
           required: true,
           horizontal: true
         },
     ],
-    };
-
-    //variable declaration for organizing the probe
-    var offTaskBlock;
-
-    //mind-wandering probe
-    var probe = {
-      type: jsPsychSurveyMultiChoice,
-      questions: [
-        {
-          prompt:
-            "Respond to the following question. Then, press continue to move forward. <br> <br> Just before this screen, were your thoughts on-task or off-task?",
-          name: "taskrelated",
-          options: ["On-task", "Off-task"],
-          required: true,
-          horizontal: false,
-        },
-      ],
-      data: {
-        probe: 1,
-      },
-      on_finish: function(data){
-        //logs response
-        if(jsPsych.pluginAPI.compareKeys(data.response["taskrelated"], "Off-task")){
-            offTaskBlock = true;
-        } else {
-            offTaskBlock = false;
-        }
-      },
-    };
-
-    //function to ask questions if participant is off-task
-    var conditionalQuestions = {
-        timeline: [offTaskQuestions],
-        conditional_function: function () {
-            if (offTaskBlock == true) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        },
-        on_finish: function(){
-            offTaskBlock = false;
-        },
     };
 
     //randomizing appearance of mind-wandering probe
@@ -395,7 +453,7 @@
     };
 
     var after2 = {
-        timeline: [probe],
+        timeline: [onOffTask, probeQuestions],
         conditional_function: function () {
             if (probabilityMW < 0.50) {
                 return true;
@@ -407,7 +465,7 @@
     };
 
     var after3 = {
-        timeline: [probe],
+        timeline: [onOffTask, probeQuestions],
         conditional_function: function () {
             if (probabilityMW >= 0.50) {
                 return true;
@@ -426,12 +484,8 @@
             imagePresent,
             imagePresent,
             after2,
-            conditionalQuestions,
             imagePresent,
-            after3,
-            conditionalQuestions,
-            imagePresent,
-            imagePresent
+            after3
       ],
     };
 
@@ -441,12 +495,8 @@
             wordPresent,
             wordPresent,
             after2,
-            conditionalQuestions,
             wordPresent,
-            after3,
-            conditionalQuestions,
-            wordPresent,
-            wordPresent
+            after3
       ],
     };
 
@@ -471,6 +521,91 @@
 
     timeline.push(randomBlocks[1]);
 
+    // shuffles test stimuli again
+    var shuffledImages2 = jsPsych.randomization.shuffle(image_stimuli)
+    var imageIndex2 = 0;
+
+    var shuffledWords2 = jsPsych.randomization.shuffle(word_stimuli);
+    var wordIndex2 = 0;
+    
+    //building recogntion test
+    var recognitionImages = {
+      type: jsPsychImageKeyboardResponse,
+      stimulus: function() {
+            return shuffledImages2[imageIndex2].stimulus;
+        },
+        prompt: "<p>Indicate how confidently you believe you have previously seen the stimulus.<br><br>Press 1 for 'Definitely New'.<br>Press 2 for 'Probably New'.<br>Press 3 for 'Probably Old'.<br>Press 4 for 'Definitely Old'.</p>",
+        choices: ['1','2','3','4'],
+        stimulus_width: 500,
+        stimulus_height: 500,
+        post_trial_gap: 500,
+        data: {
+            task: 'Image Recognition',
+        },
+        on_finish: function (data) {
+            if (oldImages.includes(shuffledImages2[imageIndex2].stimulus)) {
+                data.presence = 'old'
+            }
+            else {
+                data.presence = 'new'
+            };
+            imageIndex2 ++;
+        }
+    };
+
+    var recognitionWords = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: function() {
+            return '<p style = "font-size:50px;">' + shuffledWords2[wordIndex2].stimulus + '</p>';
+        },
+        prompt: "<p>Indicate how confidently you believe you have previously seen the stimulus.<br><br>Press 1 for 'Definitely New'.<br>Press 2 for 'Probably New'.<br>Press 3 for 'Probably Old'.<br>Press 4 for 'Definitely Old'.</p>",
+        choices: ['1','2','3','4'],
+        stimulus_width: 500,
+        stimulus_height: 500,
+        post_trial_gap: 500,
+        data: {
+            task: 'Word Recognition',
+            presence: '',
+        },
+        on_finish: function (data) {
+            if (oldWords.includes(shuffledWords2[wordIndex2].stimulus)) {
+                data.presence = 'old'
+            }
+            else {
+                data.presence = 'new'
+            };
+            wordIndex2 ++;
+        }
+    };
+
+    var recogImagesBlock = {
+        timeline: [
+            recognitionImages,
+            recognitionImages,
+            recognitionImages,
+            recognitionImages,
+            recognitionImages
+        ]
+    }
+
+    var recogWordsBlock = {
+        timeline: [
+            recognitionWords,
+            recognitionWords,
+            recognitionWords,
+            recognitionWords,
+            recognitionWords
+      ],
+    };
+
+    //matches order of study blocks
+    if (randomBlocks[0] == imagesBlock) {
+        timeline.push(recogImagesBlock);
+        timeline.push(recogWordsBlock);
+    } else {
+        timeline.push(recogWordsBlock);
+        timeline.push(recogImagesBlock);
+    };
 
     // debrief for post-experiment; saves local file
     var debrief_block = {

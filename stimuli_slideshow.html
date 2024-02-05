@@ -220,7 +220,7 @@
         { stimulus: 'GLUE' },
         { stimulus: 'HEART' },
         { stimulus: 'HOOK' },
-        { stimulus: 'INSPECT' },
+        { stimulus: 'INSECT' },
         { stimulus: 'ITEM' },
         { stimulus: 'JAM' },
         { stimulus: 'JOURNAL' },
@@ -310,28 +310,20 @@
         },
     };
 
-    //mind-wandering multi-choice
-    var onOffTask = {
-      type: jsPsychSurveyMultiChoice,
-      questions: [
-        {
-          prompt:
-            "Respond to the following question. Then, press continue to move forward. <br> <br> Just before this screen, were your thoughts on-task or off-task?",
-          name: "taskrelated",
-          options: ["On-task", "Off-task"],
-          required: true,
-          horizontal: false,
-        },
-      ],
-      data: {
-        probe: 1,
-      },
-    };
-
     //probe follow-up questions
     var probeQuestions = {
         type: jsPsychSurveyLikert,
         questions: [
+        {
+          prompt: "Just before this screen, were your thoughts on-task or off-task?",
+          name: "Task Related",
+          labels: [
+            "On-task",
+            "Off-task"
+          ],
+          required: true,
+          horizontal: true
+        },
         {
           prompt: "I was guiding my thoughts.",
           name: "Guidance",
@@ -438,6 +430,9 @@
           horizontal: true
         },
     ],
+    data: {
+        probe: 1,
+      },
     };
 
     //randomizing appearance of mind-wandering probe
@@ -453,7 +448,7 @@
     };
 
     var after2 = {
-        timeline: [onOffTask, probeQuestions],
+        timeline: [probeQuestions],
         conditional_function: function () {
             if (probabilityMW < 0.50) {
                 return true;
@@ -465,7 +460,7 @@
     };
 
     var after3 = {
-        timeline: [onOffTask, probeQuestions],
+        timeline: [probeQuestions],
         conditional_function: function () {
             if (probabilityMW >= 0.50) {
                 return true;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>My experiment</title>
+    <title>Stimuli Slideshow</title>
     <script src="https://unpkg.com/jspsych@7.3.3"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
     <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@1.1.2"></script>
@@ -11,6 +11,7 @@
     <script src="https://unpkg.com/@jspsych/plugin-survey-multi-choice@1.1.2"></script>
     <script src="https://unpkg.com/@jspsych/plugin-call-function@1.1.2"></script>
     <script src="https://unpkg.com/@jspsych/plugin-survey-likert@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-html-form@1.0.3"></script>
     <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
     <style>
     </style>
@@ -100,38 +101,8 @@
         continue_after_error: true 
     };
     
+    //pushing the preload to the timeline
     timeline.push(preload);
-
-    // welcome message for users
-    var welcome = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: "Welcome to the experiment. Press any key to begin."
-    };
-    
-    timeline.push(welcome);
-
-    // gathering email to be deidentified later; for gift card distribution
-    var email = {
-        type: jsPsychSurveyText,
-        questions: [
-            {prompt: 'For completing this experiment, you will be awarded a $10 Amazon Gift Card Code.<br><br>Please enter an email address we may contact you at.'}
-        ]
-    };
-
-    timeline.push(email);
-
-    // instructions for users to complete task
-    var instructions1 = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: `
-            <p>Study the following stimuli. They will remain on screen for 1 second each.</p>
-            <p>Press any key to begin.</p>
-        `,
-        // set gap before first trial appears
-        post_trial_gap: 2000
-    };
-
-    timeline.push(instructions1);
 
     // listing images that will be used in trials
     var image_stimuli = [
@@ -197,7 +168,7 @@
         { stimulus: 'FIGRIM/sun_bxxtkmyydusifqkv.jpg' }
     ];
 
-
+    // listing words that will be used in trials
     var word_stimuli = [
         { stimulus: 'AIRCRAFT' },
         { stimulus: 'ANIMAL' },
@@ -273,44 +244,34 @@
     var wordIndex = 0;
     var oldWords = [];
 
-    //sorting through images and words
-    var imagePresent = {
-        type: jsPsychImageKeyboardResponse,
-        stimulus: function() {
-            return shuffledImages[imageIndex].stimulus;
-        },
-        choices: "NO_KEYS",
-        stimulus_width: 500,
-        stimulus_height: 500,
-        trial_duration: 1000,
-        post_trial_gap: 100,
-        data: {
-            task: 'Image Study'
-        },
-        on_finish: function () {
-            oldImages.push(shuffledImages[imageIndex].stimulus);
-            imageIndex ++;
-        },
-    };
-
-    var wordPresent = {
+    // welcome message for users
+    var welcome = {
         type: jsPsychHtmlKeyboardResponse,
-        stimulus: function() {
-            return '<p style = "font-size:50px;">' + shuffledWords[wordIndex].stimulus + '</p>';
-        },
-        choices: "NO_KEYS",
-        trial_duration: 1000,
-        post_trial_gap: 100,
-        data: {
-            task: 'Word Study'
-        },
-        on_finish: function () {
-            oldWords.push(shuffledWords[wordIndex].stimulus);
-            wordIndex ++;
-        },
+        stimulus: "Welcome to the experiment. Press any key to begin."
+    };
+    
+    timeline.push(welcome);
+
+    // gathering email and other demographics to be deidentified later; email is for gift card distribution
+    var demographics = {
+        type: jsPsychSurveyHtmlForm,
+        preamble: "<p>Please respond to the following questions:</p>",
+        html: `
+            <p><label for='age'>Age: </label><input type='text' name='age' /></p>
+            <p>Gender: 
+                <label><input type='radio' name='gender' value='male' /> Male</label>
+                <label><input type='radio' name='gender' value='female' /> Female</label>
+                <label><input type='radio' name='gender' value='other' /> Other</label>
+                <label for='gender'><br>If other, please specify:<br></label><input type='text' name='gender' />
+            </p>
+            <p><label for='email'>For completing this experiment, you will be awarded a $10 Amazon Gift Card Code.<br>Please enter an email address we may contact you at:<br></label><input type='text' name='email' /></p>
+            `,
+        button_label: "Submit"
     };
 
-    //probe follow-up questions
+    timeline.push(demographics);
+
+    // mind-wandering probe
     var probeQuestions = {
         type: jsPsychSurveyLikert,
         questions: [
@@ -328,13 +289,13 @@
           prompt: "I was guiding my thoughts.",
           name: "Guidance",
           labels: [
-            "No guidance",
+            "Completely unguided",
             "",
             "",
             "",
             "",
             "",
-            "Complete guidance",
+            "Completely guided",
           ],
           required: true,
           horizontal: true
@@ -355,7 +316,7 @@
           horizontal: true
         },
         {
-          prompt: "My thoughts were focused on inner speech (e.g., self-talk or planning dinner).",
+          prompt: "My thoughts were focused on inner speech.",
           name: "Inner Speech",
           labels: [
             "No inner speech",
@@ -370,7 +331,7 @@
           horizontal: true
         },
         {
-          prompt: "My thoughts were focused on visual imagery(e.g., imagining a walk through the park).",
+          prompt: "My thoughts were focused on visual imagery.",
           name: "Inner Imagery",
           labels: [
             "No visual imagery",
@@ -385,7 +346,7 @@
           horizontal: true
         },
         {
-          prompt: "My thoughts were focused on auditory imagery(e.g., having a tune in mind).",
+          prompt: "My thoughts were focused on auditory imagery.",
           name: "Inner Auditory",
           labels: [
             "No auditory imagery",
@@ -400,7 +361,7 @@
           horizontal: true
         },
         {
-          prompt: "My thoughts were focused on bodily sensation(e.g., a pain or itch in your foot).",
+          prompt: "My thoughts were focused on bodily sensation.",
           name: "Bodily Sensation",
           labels: [
             "No bodily sensation",
@@ -415,7 +376,7 @@
           horizontal: true
         },
         {
-          prompt: "My thoughts were focused on a particular emotion(e.g., feeling happy or sad).",
+          prompt: "My thoughts were focused on a particular emotion.",
           name: "Inner Emotion",
           labels: [
             "No inner emotion",
@@ -435,18 +396,131 @@
       },
     };
 
-    //randomizing appearance of mind-wandering probe
+    // fake instructions preceding practice probe
+    var instructionsFake = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: `
+            <p>Study the following stimuli. They will remain on screen for 10 seconds each.</p>
+            <p>Press any key to begin.</p>
+        `,
+        // set gap before first trial appears
+        post_trial_gap: 2000
+    };
+
+    timeline.push(instructionsFake);
+
+    // practice probe
+    timeline.push(probeQuestions);
+
+    var instructionsProbe1 = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: `
+            <p>Surprise! That was a practice mind-wandering probe.</p>
+            <p>Probes will appear randomly throughout the study phases, asking questions about your thoughts.</p>
+            <p>It's crucial that you respond to these probes honestly each time they appear.</p>
+            <p>Press any key to continue.</p>
+        `,
+        // set gap before next instructions
+        post_trial_gap: 500
+    };
+
+    var instructionsProbe2 = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: `
+            <p>In addition to being on or off-task, the probe asks you more detailed questions about your thoughts before it appeared.</p>
+            <p>If your thoughts were focused on inner speech (e.g., self-talk or planning dinner), you could select "Lots of inner speech".</p>
+            <p>If you were imagining something like walking through the park, you could select "Lots of inner speech".</p>
+            <p>Or:</p>
+            <p>Have a tune in mind? Select "Lots of auditory imagery".</p>
+            <p>What about if you were focusing on a pain or itch in your foot? Select "Lots of bodily sensation".</p>
+            <p>If your thoughts were especially happy or sad, you could select "Lots of inner emotion".<br><br></p>
+            <p>Importantly, your thoughts commonly belong to multiple categories at the same time.</p>
+            <p>Make sure to evaluate your thoughts against each category.</p>
+            <p>Press any key to continue.</p>
+        `,
+        // set gap before next instructions
+        post_trial_gap: 500
+    };
+
+    var instructionsProbe = {
+        timeline: [
+            instructionsProbe1,
+            instructionsProbe2
+        ]
+    };
+
+    timeline.push(instructionsProbe);
+
+    // instructions for users to complete task
+    var instructions1 = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: `
+            <p>Now, study the following stimuli. They will remain on screen for 10 seconds each.</p>
+            <p>Press any key to begin.</p>
+        `,
+        // set gap before first trial appears
+        post_trial_gap: 2000
+    };
+
+    timeline.push(instructions1);
+
+    // outputs indexed image of shuffled image array, starting at zero
+    var imagePresent = {
+        type: jsPsychImageKeyboardResponse,
+        stimulus: function() {
+            return shuffledImages[imageIndex].stimulus;
+        },
+        choices: "NO_KEYS",
+        stimulus_width: 500,
+        stimulus_height: 500,
+        trial_duration: 10000,
+        post_trial_gap: 100,
+        data: {
+            task: 'Image Study'
+        },
+        // stores "used" words in array for evaluating recognition test accuracy
+        on_finish: function () {
+            oldImages.push(shuffledImages[imageIndex].stimulus);
+            // increases index to prepare for next run-through
+            imageIndex ++;
+        },
+    };
+
+    // outputs indexed word of shuffled word array, starting at 0
+    var wordPresent = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: function() {
+            return '<p style = "font-size:50px;">' + shuffledWords[wordIndex].stimulus + '</p>';
+        },
+        choices: "NO_KEYS",
+        trial_duration: 10000,
+        post_trial_gap: 100,
+        data: {
+            task: 'Word Study'
+        },
+        // stores "used" words in array for evaluating recognition test accuracy
+        on_finish: function () {
+            oldWords.push(shuffledWords[wordIndex].stimulus);
+            // increases index to prepare for next run-through
+            wordIndex ++;
+        },
+    };
+
+    // declaring variables for pseudo-random distribution of probe
     var probabilityMW;
 
     var probeProbability = function () {
-      probabilityMW = Math.random();
+        // returns a random number between 0 and 1
+        probabilityMW = Math.random();
     };
 
+    // timeline variable to call the function
     var probeProbabilityFxn = {
-      type: jsPsychCallFunction,
-      func: probeProbability,
+        type: jsPsychCallFunction,
+        func: probeProbability,
     };
 
+    // randomly implements the probe after 2 or 3 images in each 3-image block
     var after2 = {
         timeline: [probeQuestions],
         conditional_function: function () {
@@ -472,7 +546,7 @@
     };
 
 
-    //testing blocks
+    // timeline images block, with probe logic
     var imagesBlock = {
         timeline: [
             probeProbabilityFxn,
@@ -484,6 +558,7 @@
       ],
     };
 
+    // timeline words block, with probe logic
     var wordsBlock = {
         timeline: [
             probeProbabilityFxn,
@@ -500,12 +575,16 @@
     
     var randomBlocks = jsPsych.randomization.sampleWithoutReplacement(blockArray, 2);
 
-    timeline.push(randomBlocks[0]);
+    // loop to produce 30 total stimuli of block 1
+    for (let i = 0; i < 10; i++) {
+        timeline.push(randomBlocks[0]);
+    }
 
+    // identical instructions for the second study phase
     var instructions2 = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: `
-            <p>Study the following stimuli. They will remain on screen for 1 second each.</p>
+            <p>Study the following stimuli. They will remain on screen for 10 seconds each.</p>
             <p>Press any key to begin.</p>
         `,
         // set gap before first trial appears
@@ -514,22 +593,25 @@
 
     timeline.push(instructions2);
 
-    timeline.push(randomBlocks[1]);
+    // loop to produce 30 total stimuli of block 2
+    for (let i = 0; i < 10; i++) {
+        timeline.push(randomBlocks[1]);
+    }
 
-    // shuffles test stimuli again
+    // shuffles test stimuli again for recognition phase
     var shuffledImages2 = jsPsych.randomization.shuffle(image_stimuli)
     var imageIndex2 = 0;
 
     var shuffledWords2 = jsPsych.randomization.shuffle(word_stimuli);
     var wordIndex2 = 0;
     
-    //building recogntion test
+    // building recogntion test for images, similar to study phase
     var recognitionImages = {
       type: jsPsychImageKeyboardResponse,
       stimulus: function() {
             return shuffledImages2[imageIndex2].stimulus;
         },
-        prompt: "<p>Indicate how confidently you believe you have previously seen the stimulus.<br><br>Press 1 for 'Definitely New'.<br>Press 2 for 'Probably New'.<br>Press 3 for 'Probably Old'.<br>Press 4 for 'Definitely Old'.</p>",
+        prompt: "<p>Indicate how confidently you believe you have previously seen the stimulus.<br><br>Press 1 for 'High-confidence new'.<br>Press 2 for 'Low-confidence new'.<br>Press 3 for 'Low-confidence old'.<br>Press 4 for 'High-confidence old'.</p>",
         choices: ['1','2','3','4'],
         stimulus_width: 500,
         stimulus_height: 500,
@@ -538,22 +620,25 @@
             task: 'Image Recognition',
         },
         on_finish: function (data) {
+            // adds "presence" data, indicating whether the stimulus was old or new
             if (oldImages.includes(shuffledImages2[imageIndex2].stimulus)) {
                 data.presence = 'old'
             }
             else {
                 data.presence = 'new'
             };
+            // ensures iteration to next stimulus
             imageIndex2 ++;
         }
     };
 
+    // building recogntion test for words, similar to study phase
     var recognitionWords = {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: function() {
             return '<p style = "font-size:50px;">' + shuffledWords2[wordIndex2].stimulus + '</p>';
         },
-        prompt: "<p>Indicate how confidently you believe you have previously seen the stimulus.<br><br>Press 1 for 'Definitely New'.<br>Press 2 for 'Probably New'.<br>Press 3 for 'Probably Old'.<br>Press 4 for 'Definitely Old'.</p>",
+        prompt: "<p>Indicate how confidently you believe you have previously seen the stimulus.<br><br>Press 1 for 'High-confidence new'.<br>Press 2 for 'Low-confidence new'.<br>Press 3 for 'Low-confidence old'.<br>Press 4 for 'High-confidence old'.</p>",
         choices: ['1','2','3','4'],
         stimulus_width: 500,
         stimulus_height: 500,
@@ -563,44 +648,326 @@
             presence: '',
         },
         on_finish: function (data) {
+            // adds "presence" data, indicating whether the stimulus was old or new
             if (oldWords.includes(shuffledWords2[wordIndex2].stimulus)) {
                 data.presence = 'old'
             }
             else {
                 data.presence = 'new'
             };
+            // ensures iteration to next stimulus
             wordIndex2 ++;
         }
     };
 
-    var recogImagesBlock = {
-        timeline: [
-            recognitionImages,
-            recognitionImages,
-            recognitionImages,
-            recognitionImages,
-            recognitionImages
-        ]
-    }
-
-    var recogWordsBlock = {
-        timeline: [
-            recognitionWords,
-            recognitionWords,
-            recognitionWords,
-            recognitionWords,
-            recognitionWords
-      ],
-    };
-
-    //matches order of study blocks
+    // pushes all previous stimuli and new FOILs; matches order of study phase blocks
     if (randomBlocks[0] == imagesBlock) {
-        timeline.push(recogImagesBlock);
-        timeline.push(recogWordsBlock);
+        for (let i = 0; i < 60; i++) {
+            timeline.push(recognitionImages);
+        }
+        for (let i = 0; i < 60; i++) {
+            timeline.push(recognitionWords);
+        }
     } else {
-        timeline.push(recogWordsBlock);
-        timeline.push(recogImagesBlock);
+        for (let i = 0; i < 60; i++) {
+            timeline.push(recognitionWords);
+        }
+        for (let i = 0; i < 60; i++) {
+            timeline.push(recognitionImages);
+        }
     };
+
+    //likert scale labels for wisdom questions
+    wisdomLabels1 = ["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"];
+    
+    wisdomLabels2 = ["Definitely true of myself", "Mostly true of myself", "Unsure", "Mostly untrue of myself", "Definitely untrue of myself"];
+
+    // wisdom questions block 1
+    var wisdomQuestions1 = {
+        type: jsPsychSurveyLikert,
+        preamble: "<div><p class><strong>How strongly do you agree or disagree with the following statements?</strong></p></div>",
+        questions: [
+            {
+                prompt: "Ignorance is bliss.", 
+                labels: wisdomLabels1, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "It is better to not know too much about things that cannot be changed.", 
+                labels: wisdomLabels1, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "In this complicated world of ours, the only way we can know what’s going on is to rely on leaders or experts who can be trusted.", 
+                labels: wisdomLabels1, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "There is only one right way to do anything.", 
+                labels: wisdomLabels1, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "A person either knows the answer to a question or he/she doesn’t.", 
+                labels: wisdomLabels1, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "You can classify almost all people as either honest or crooked.", 
+                labels: wisdomLabels1, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "People are either good or bad.", 
+                labels: wisdomLabels1, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "Life is basically the same most of the time.", 
+                labels: wisdomLabels1, 
+                required: true, 
+                horizontal: true
+            }
+        ]
+    };
+
+    // wisdom questions block 2
+    var wisdomQuestions2 = {
+        type: jsPsychSurveyLikert,
+        preamble: "<div><p class><strong>How much are the following statements true of yourself?</strong></p></div>",
+        questions: [
+            {
+                prompt: "A problem has little attraction for me if I don't think it has a solution.", 
+                labels: wisdomLabels2, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "I try to anticipate and avoid situations where there is a likely chance I will have to think in depth about something.", 
+                labels: wisdomLabels2, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "I prefer just to let things happen rather than try to understand why they turned out that way.", 
+                labels: wisdomLabels2, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "Simply knowing the answer rather than understanding the reasons for the answer to a problem is fine with me.", 
+                labels: wisdomLabels2, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "I am hesitant about making important decisions after thinking about them.", 
+                labels: wisdomLabels2, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "I often do not understand people's behavior.", 
+                labels: wisdomLabels2, 
+                required: true, 
+                horizontal: true
+            }
+        ]
+    };
+
+    //combining into single block to be pushed
+    var wisdomQuestions = {
+        timeline: [
+            wisdomQuestions1,
+            wisdomQuestions2
+        ]
+    };
+
+    timeline.push(wisdomQuestions);
+
+    // instructions for VVIQ
+    var vividnessInstructions = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: `
+            <p>For each following scenario try to form a mental picture of the 
+            people, objects, or setting.</p><p>Your task is to rate how vivid the mental
+            picture is using a 5-point scale. If you do not have a</p><p>visual image, 
+            rate vividness as '1'.
+            <div>
+                <p class='small'>Only use '5' for mental pictures that are as vivid as <strong>real seeing</strong></p>.
+            </div>
+            <p>The rating scale is as follows:</p>
+            <p>1. No image at all, I only “know” I am thinking of the object</p>
+            <p>2. Dim and vague image</p>
+            <p>3. Moderately realistic and vivid</p>
+            <p>4. Realistic and reasonably vivid</p>
+            <p>5. Perfectly realistic, as vivid as real seeing</p>
+            <p>Press any key to begin.</p>
+        `,
+        // set gap before first trial appears
+        post_trial_gap: 1000
+    };
+
+    timeline.push(vividnessInstructions);
+
+    // defines vividness labels for reuse in each trial block
+    var vividnessLabels = [
+        "No image at all, I only “know” I am thinking of the object",
+        "Dim and vague image",
+        "Moderately realistic and vivid",
+        "Realistic and reasonably vivid",
+        "Perfectly realistic, as vivid as real seeing"
+    ];
+
+    // VVIQ Block 1
+    var vividnessTrials1 = {
+        type: jsPsychSurveyLikert,
+        preamble: "<div><p class><strong>For the following questions, think of some relative or friend whom you frequently see (but who is not with you at present) and consider carefully the picture that comes before your mind's eye. Indicate how vividly you can imagine:</strong></p></div>",
+        questions: [
+            {
+                prompt: "The exact contour of face, head, shoulders, and body.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "Characteristic poses of head, attitudes of body, etc.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "The precise carriage, length of step, etc., in walking.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "The different colors worn in some familiar clothes.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            }
+        ],
+        post_trial_gap: 500
+    };
+
+    // VVIQ Block 2
+    var vividnessTrials2 = {
+        type: jsPsychSurveyLikert,
+        preamble: "<div><p class><strong>Visualize a rising sun. Consider carefully the picture that comes before your mind's eye. Indicate how vividly you imagine:</strong></p></div>",
+        questions: [
+            {
+                prompt: "The sun is rising above the horizon into a hazy sky.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "The sky clears and surrounds the sun with blueness.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "Clouds. A storm blows up, with flashes of lightning.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "A rainbow appears.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            }
+        ],
+        post_trial_gap: 500
+    };
+
+    // VVIQ Block 3
+    var vividnessTrials3 = {
+        type: jsPsychSurveyLikert,
+        preamble: "<div><p class><strong>Think of the front of a shop which you often go to. Consider carefully the picture that comes before your mind's eye. Indicate how vividly you imagine:</strong></p></div>",
+        questions: [
+            {
+                prompt: "The overall appearance of the shop from the opposite side of the road.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "A window display including colors, shapes, and details of individual items for sale.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "You are near the entrance. The color, shape, and details of the door.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "You enter the shop and go to the counter. The counter assistance serves you. Money changes hands.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            }
+        ],
+        post_trial_gap: 500
+    };
+
+    // VVIQ Block 4
+    var vividnessTrials4 = {
+        type: jsPsychSurveyLikert,
+        preamble: "<div><p class><strong>Think of a country scene which involves trees, mountains, and a lake. Consider carefully the picture that comes before your mind's eye. Indicate how vividly you imagine:</strong></p></div>",
+        questions: [
+            {
+                prompt: "The contours of the landscape.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "The color and shape of the trees.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "The color and shape of the lake.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "A strong wind blows on the trees and the lake causing waves.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            }
+        ]
+    };
+
+    // combining into single block to be pushed
+    var vividnessTrials = {
+        timeline: [
+            vividnessTrials1,
+            vividnessTrials2,
+            vividnessTrials3,
+            vividnessTrials4
+        ]
+    };
+
+    timeline.push(vividnessTrials);
 
     // debrief for post-experiment; saves local file
     var debrief_block = {

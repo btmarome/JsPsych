@@ -4,8 +4,7 @@
     <title>My experiment</title>
     <script src="https://unpkg.com/jspsych@7.3.3"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@1.1.2"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-preload@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-likert@1.1.2"></script>
     <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
     <style>
     </style>
@@ -32,16 +31,16 @@
     
     timeline.push(welcome);
 
-    // instructions for users to complete task
-    var instructions = {
+    // instructions for VVIQ
+    var vividnessInstructions = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: `
             <p>For each following scenario try to form a mental picture of the 
             people, objects, or setting.</p><p>Your task is to rate how vivid the mental
-            picture is using a 5-point scale.</p>
-            <p>If you do not have a visual image, rate vividness as '1'.</p>
+            picture is using a 5-point scale. If you do not have a</p><p>visual image, 
+            rate vividness as '1'.
             <div>
-                <p class='small'>Only use '5' for mental pictures that are as vivid as <strong>real seeing</strong>.</p>
+                <p class='small'>Only use '5' for mental pictures that are as vivid as <strong>real seeing</strong></p>.
             </div>
             <p>The rating scale is as follows:</p>
             <p>1. No image at all, I only “know” I am thinking of the object</p>
@@ -52,71 +51,171 @@
             <p>Press any key to begin.</p>
         `,
         // set gap before first trial appears
-        post_trial_gap: 2000
+        post_trial_gap: 1000
     };
 
-    timeline.push(instructions);
+    timeline.push(vividnessInstructions);
 
-
-    // listing prompts that will be used in trials
-    var test_stimuli = [
-        { stimulus: 'For items 1-4, think of some relative or friend whom you frequently see (but who is not with you at present) and consider carefully the picture that comes before your mind\'s eye. Press a number 1-5 to indicate how vividly you can imagine:<br><br>1. The exact contour of face, head, shoulders and body.'},
-        { stimulus: '2. Characteristic poses of head, attitudes of body, etc.' },
-        { stimulus: '3. The precise carriage, length of step, etc. in walking.' },
-        { stimulus: '4. The different colours worn in some familiar clothes.' },
-        { stimulus: 'For items 5-8, visualize a rising sun. Consider carefully the picture that comes before your mind\'s eye. Press a number 1-5 to indicate how vividly you imagine:<br><br>5. The sun is rising above the horizon into a hazy sky.'},
-        { stimulus: '6. The sky clears and surrounds the sun with blueness.' },
-        { stimulus: '7. Clouds. A storm blows up, with flashes of lightning.' },
-        { stimulus: '8. A rainbow appears.' },
-        { stimulus: 'For items 9-12, think of the front of a shop which you often go to. Consider carefully the picture that comes before your mind\'s eye. Press a number 1-5 to indicate how vividly you imagine:<br><br>9. The overall appearance of the shop from the opposite side of the road.' },
-        { stimulus: '10. A window display including colours, shapes and details of individual items for sale.' },
-        { stimulus: '11. You are near the entrance. The colour, shape and details of the door.' },
-        { stimulus: '12. You enter the shop and go to the counter. The counter assistance serves you. Money changes hands.' },
-        { stimulus: 'For items 13-16, think of a country scene which involves trees, mountains and a lake. Consider carefully the picture that comes before your mind\'s eye. Press a number 1-5 to indicate how vividly you imagine:<br><br>13. The contours of the landscape. ' },
-        { stimulus: '14. The colour and shape of the trees.' },
-        { stimulus: '15. The colour and shape of the lake.' },
-        { stimulus: '16. A strong wind blows on the trees and the lake causing waves.' }
+    // Define vividness labels for reuse in each trial block
+    var vividnessLabels = [
+        "No image at all, I only “know” I am thinking of the object",
+        "Dim and vague image",
+        "Moderately realistic and vivid",
+        "Realistic and reasonably vivid",
+        "Perfectly realistic, as vivid as real seeing"
     ];
 
-    // 500 ms intertrial interval
-    var trial_gap = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: ' ',
-        choices: "NO_KEYS",
-        trial_duration: 500,
-        data: {
-            task: 'trial gap'
-        }
+    // VVIQ Block 1
+    var vividnessTrials1 = {
+        type: jsPsychSurveyLikert,
+        preamble: "<div><p class><strong>For the following questions, think of some relative or friend whom you frequently see (but who is not with you at present) and consider carefully the picture that comes before your mind's eye. Indicate how vividly you can imagine:</strong></p></div>",
+        questions: [
+            {
+                prompt: "The exact contour of face, head, shoulders, and body.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "Characteristic poses of head, attitudes of body, etc.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "The precise carriage, length of step, etc., in walking.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "The different colors worn in some familiar clothes.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            }
+        ],
+        post_trial_gap: 500
     };
 
-   // organizing scale items for easier analysis
-    var test = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: jsPsych.timelineVariable('stimulus'),
-        choices: ['1', '2', '3', '4', '5'],
-        data: {
-            task: 'response',
-            survey: 'VVIQ'
-        },
-    }
-    // combining test and trial gap into single trial
-    var test_procedure = {
-        timeline: [trial_gap, test],
-        timeline_variables: test_stimuli,
-        repetitions: 1,
-        randomize_order: false
-    }
+    // VVIQ Block 2
+    var vividnessTrials2 = {
+        type: jsPsychSurveyLikert,
+        preamble: "<div><p class><strong>Visualize a rising sun. Consider carefully the picture that comes before your mind's eye. Indicate how vividly you imagine:</strong></p></div>",
+        questions: [
+            {
+                prompt: "The sun is rising above the horizon into a hazy sky.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "The sky clears and surrounds the sun with blueness.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "Clouds. A storm blows up, with flashes of lightning.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "A rainbow appears.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            }
+        ],
+        post_trial_gap: 500
+    };
 
-    timeline.push(test_procedure);
+    // VVIQ Block 3
+    var vividnessTrials3 = {
+        type: jsPsychSurveyLikert,
+        preamble: "<div><p class><strong>Think of the front of a shop which you often go to. Consider carefully the picture that comes before your mind's eye. Indicate how vividly you imagine:</strong></p></div>",
+        questions: [
+            {
+                prompt: "The overall appearance of the shop from the opposite side of the road.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "A window display including colors, shapes, and details of individual items for sale.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "You are near the entrance. The color, shape, and details of the door.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "You enter the shop and go to the counter. The counter assistance serves you. Money changes hands.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            }
+        ],
+        post_trial_gap: 500
+    };
+
+    // VVIQ Block 4
+    var vividnessTrials4 = {
+        type: jsPsychSurveyLikert,
+        preamble: "<div><p class><strong>Think of a country scene which involves trees, mountains, and a lake. Consider carefully the picture that comes before your mind's eye. Indicate how vividly you imagine:</strong></p></div>",
+        questions: [
+            {
+                prompt: "The contours of the landscape.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "The color and shape of the trees.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "The color and shape of the lake.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            },
+            {
+                prompt: "A strong wind blows on the trees and the lake causing waves.", 
+                labels: vividnessLabels, 
+                required: true, 
+                horizontal: true
+            }
+        ]
+    };
+
+    //Combining into single block to be pushed to timeline
+    var vividnessTrials = {
+        timeline: [
+            vividnessTrials1,
+            vividnessTrials2,
+            vividnessTrials3,
+            vividnessTrials4
+        ]
+    };
+
+    timeline.push(vividnessTrials);
 
     // debrief for post-experiment
     var debrief_block = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: function() {
 
-            jsPsych.data.get().localSave('csv','mydata.csv');
+            jsPsych.data.get().localSave("csv","mydata.csv");
 
-            return `<p>Press any key to complete the experiment. Thank you!</p>`;
+            return "<p>Press any key to complete the experiment. Thank you!</p>";
         }
     };
 
